@@ -3,12 +3,17 @@ import axios, { AxiosResponse } from "axios"
 import rateLimit, { RateLimitedAxiosInstance } from "axios-rate-limit"
 import prettyJSON from "prettyjson"
 import axiosDebugger from "axios-debug-log"
+import fs from "fs"
+import path from "path"
+const __dirname=path.resolve()
+import dotenv from "dotenv"
+dotenv.config({ path: `${__dirname}/../.env`})
 
 const MB_API_VER = 6
 const BASE_URL = `https://api.mindbodyonline.com/public/v${MB_API_VER}`
 const MAX_SERVICE_REQ = 200 // in range 0 - 200
-const API_TOKEN = "b46102a0d390475aae114962a9a1fbd9"
-const SITE_ID = "220689"
+const API_TOKEN = process.env.API_TOKEN
+const SITE_ID = process.env.SITE_ID
 
 interface service {
     Count: number,
@@ -39,7 +44,7 @@ function configureAxiosDebug() {
 async function getUserToken(): Promise<string> {
     let token = ''
     try {
-        const response = await axios.post(`/usertoken/issue`, { username: "barry@lissome.hk", password: "YL3RA4o4" })
+        const response = await axios.post(`/usertoken/issue`, { username: process.env.USER_NAME, password: process.env.USER_PASSWORD })
         token = response.data.AccessToken
 
     } catch (error) {
@@ -81,14 +86,14 @@ async function getServices(limiter: RateLimitedAxiosInstance) {
 
 function processServices(services: service[]) {
 
-    function updateServiceExpiration {
-
+    function updateServiceExpiration() {
+        // FUUCK no API support for updating payment options...
     }
 
     services.forEach((service) => {
         if (service.Count > 1) {
             console.log(service.Name)
-            // FUUCK no API support for updating payment options...
+            updateServiceExpiration()
         }
     })
 }
