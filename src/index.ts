@@ -1,13 +1,11 @@
 //const axios = require('axios').default;
-import axios, { AxiosResponse } from "axios"
+import axios from "axios"
 import rateLimit, { RateLimitedAxiosInstance } from "axios-rate-limit"
-import prettyJSON from "prettyjson"
 import axiosDebugger from "axios-debug-log"
-import fs from "fs"
 import path from "path"
-const __dirname=path.resolve()
+const __dirname = path.resolve()
 import dotenv from "dotenv"
-dotenv.config({ path: `${__dirname}/../.env`})
+dotenv.config({ path: `${__dirname}/../.env` })
 
 const MB_API_VER = 6
 const BASE_URL = `https://api.mindbodyonline.com/public/v${MB_API_VER}`
@@ -57,10 +55,8 @@ async function getUserToken(): Promise<string> {
 async function getServices(limiter: RateLimitedAxiosInstance) {
     const requestSize = MAX_SERVICE_REQ
     let offset = 0
-    let response = undefined
     let services: service[] = []
     let allServices = services
-    let numServices = 0
     let moreData = false
     do {
         try {
@@ -68,7 +64,6 @@ async function getServices(limiter: RateLimitedAxiosInstance) {
             // console.log(prettyJSON.render(response.data.Services))
             services = response.data.Services
             allServices = allServices.concat(services)
-            numServices += services.length
             console.log(`Received ${services.length} items.`)
             if (services.length === requestSize) {
                 moreData = true
